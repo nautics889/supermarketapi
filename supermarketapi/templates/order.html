@@ -1,0 +1,52 @@
+{% load rest_framework %}
+
+<html>
+<body>
+
+<h3>Sum: {{ total_sum }}</h3>
+<h3>You ordered:</h3>
+{% for item in goods %}
+<p>{{ item.0.name }} — {{ item.1 }}</p>
+{% endfor %}
+<h3><b>BONUS:</b></h3>
+{% for item in extra_goods %}
+<p>{{ item.0.name }} — {{ item.1 }}</p>
+{% endfor %}
+
+<form method="POST">
+	{% csrf_token %}
+	<p>Select product:</p>
+    <select name="product">
+    	{% for product in products %}
+        <option value="{{ product.id }}">{{ product.name }}</option>
+        {% endfor %}
+    </select>
+    <p>Select amount:</p>
+    <input type="number" name="amount" value="0" min="0", max="20">
+    <p>Select kg:</p>
+    <input type="number" name="weight" value="0" step="0.5", min="0", max="99"> kg<br><br>
+    <input type="submit" value="Count cost">
+</form>
+<form action="{% url 'reset_ordering' %}" method="POST">
+	{% csrf_token %}
+	<input type="submit" value="Reset ordering">
+</form>
+<script type="text/javascript">
+	const selector = document.querySelector('select[name=product]');
+    const amount = document.querySelector('input[name=amount]');
+    const weight = document.querySelector('input[name=weight]');
+
+    weight.disabled = true;
+
+    selector.addEventListener('change', (e) => {
+	    if (selector.value === '5') {
+  	        amount.disabled = true;
+  	        weight.disabled = false;
+        } else {
+            amount.disabled = false;
+            weight.disabled = true;
+        }
+    });
+</script>
+</body>
+</html>
